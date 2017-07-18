@@ -1,5 +1,5 @@
 {
-  "name": "BeasBlog",
+  "name": "web-nodejs-starter",
   "version": "1.0.0",
   "main": "server.js",
   "author": "Sergey Moiseenko <sergeymoiseenko.i@mail.ru>",
@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "",
-    "start": "node ./src/bin/development",
+    "start": "node ./dist/server/server.bundle.js",
+    "webpack": "webpack --config webpack/webpack.server.config.js --debug",
     "build": "",
     "production": ""
   },
@@ -24,13 +25,17 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pug": "^2.0.0-rc.2",
-    "redis": "^2.7.1"
+    "redis": "^2.7.1",
+    "source-map-support": "^0.4.15",
+    "webpack-node-externals": "^1.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.16",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-config-prettier": "^2.3.0",
@@ -41,6 +46,8 @@
     "gulp-concat": "^2.6.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-sourcemaps": "^2.6.0",
-    "prettier": "^1.5.2"
+    "prettier": "^1.5.2",
+    "webpack": "^3.3.0",
+    "webpack-dev-server": "^2.5.1"
   }
 }
