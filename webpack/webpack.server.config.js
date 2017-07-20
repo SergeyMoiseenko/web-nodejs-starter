@@ -1,7 +1,9 @@
 const path = require("path");
-const webpack = require("webpack"); // eslint-disable-line
+const webpack = require("webpack");
 const serverExternalDeps = require("webpack-node-externals");
-const CleanPlugin = require("clean-webpack-plugin"); // eslint-disable-line
+const CleanPlugin = require("clean-webpack-plugin");
+const eslintFormatter = require("eslint-friendly-formatter");
+const Dotenv = require("dotenv-webpack");
 
 // FIXME: Must be defined in accordance with NODE_ENV
 const sourceMapBanner = {
@@ -9,6 +11,7 @@ const sourceMapBanner = {
   banner: 'require("source-map-support").install();',
   entryOnly: false
 };
+
 const babelOptions = {
   presets: [
     [
@@ -19,7 +22,8 @@ const babelOptions = {
         }
       }
     ]
-  ]
+  ],
+  plugins: ["transform-react-jsx"]
 };
 
 module.exports = {
@@ -46,11 +50,26 @@ module.exports = {
             options: babelOptions
           }
         ]
+      },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        include: [path.resolve(__dirname, "../src")],
+        loader: "eslint-loader",
+        options: {
+          fix: true,
+          formatter: eslintFormatter,
+          failOnError: false
+        }
       }
     ]
   },
   context: __dirname,
   plugins: [
+    new Dotenv({
+      path: path.resolve(__dirname, "../.env"),
+      safe: path.resolve(__dirname, "../.env.example")
+    }),
     new webpack.BannerPlugin(sourceMapBanner),
     new CleanPlugin(["server"], {
       root: path.resolve(__dirname, "../dist")

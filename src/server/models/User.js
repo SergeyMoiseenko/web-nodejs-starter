@@ -51,8 +51,7 @@ UserSchema.pre("save", true, function(next, done) {
     return next();
   }
 
-  // FIXME: That value must be configurable
-  const saltRounds = 10;
+  const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
   hashPassword(this.passw, saltRounds)
     .then(securedPassw => {
       this.passw = securedPassw;

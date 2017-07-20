@@ -12,12 +12,9 @@ import cfg from "./config";
 
 mongoose.Promise = bluebirdPromise;
 
-// mogoose.connect("mongodb://username:password@host:port/database?options");
-mongoose
-  .connect("mongodb://localhost/appstarter", { useMongoClient: true })
-  .then(() => {
-    console.log("Connection to mongo created");
-  });
+mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true }).then(() => {
+  console.log("Connection to mongo created");
+});
 const RedisStore = connectRedis(expressSession);
 const app = express();
 
@@ -33,10 +30,10 @@ app.use(
     cookie: {
       maxAge: 260000
     },
-    secret: "shhhhhhh its a secret",
+    secret: process.env.SESSION_SECRET,
     store: new RedisStore({
-      host: cfg.redis.host,
-      port: cfg.redis.port,
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT, 10),
       client: redis.createClient(),
       ttl: 260
     }),
@@ -50,5 +47,5 @@ app.use(passport.session());
 
 initServer(app);
 
-app.listen(3000);
-console.log("app listen");
+app.listen(parseInt(process.env.PORT, 10));
+console.log(`app listen on port ${parseInt(process.env.PORT, 10)}`);
