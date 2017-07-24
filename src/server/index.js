@@ -8,7 +8,6 @@ import mongoose from "mongoose";
 import bluebirdPromise from "bluebird";
 import initServer from "./server";
 import passport from "./authentication";
-import cfg from "./config";
 
 mongoose.Promise = bluebirdPromise;
 
@@ -44,6 +43,19 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+/* eslint-disable */
+if (process.env.NODE_ENV === "development") {
+  const webpack = require("webpack");
+  const devMiddleware = require("webpack-dev-middleware");
+  const hotMiddleware = require("webpack-hot-middleware");
+  const browserConfig = require("../../webpack/client.babel").default( {dev: true} );
+  console.log(process.cwd());
+  const compiler = webpack(browserConfig);
+  app.use(devMiddleware(compiler, {noInfo: true, publicPath: browserConfig.output.publicPath}));
+  app.use(hotMiddleware(compiler));
+}
+/* eslint-enable */
 
 initServer(app);
 
