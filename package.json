@@ -6,13 +6,13 @@
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "",
-    "start": "yarn run build:server && node ./build/server.dev.js",
-    "build:web": "webpack --config webpack/client.babel.js --env.dev --debug",
-    "build:server": "webpack --config webpack/server.babel.js --env.dev --debug",
-    "build:web:prod": "webpack --config webpack/client.babel.js --env.prod",
-    "build:server:prod": "webpack --config webpack/server.babel.js --env.prod",
-    "production": ""
+    "start": "gulp dev",
+    "build": "gulp build",
+    "build:prod": "gulp build:prod",
+    "build:web": "gulp client:build:dev",
+    "build:server": "gulp server:build:dev",
+    "build:web:prod": "gulp client:build:prod",
+    "build:server:prod": "gulp server:build:prod"
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
@@ -22,6 +22,8 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
     "express-session": "^1.15.3",
+    "gulp-util": "^3.0.8",
+    "http-proxy-middleware": "^0.17.4",
     "mongoose": "^4.11.1",
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
@@ -62,7 +64,9 @@
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
     "gulp-nodemon": "^2.2.1",
+    "gulp-shell": "^0.6.3",
     "gulp-sourcemaps": "^2.6.0",
+    "nodemon": "^1.11.0",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.6",
@@ -73,7 +77,7 @@
     "webpack": "^3.3.0",
     "webpack-config-utils": "^2.3.0",
     "webpack-dev-middleware": "^1.11.0",
-    "webpack-dev-server": "^2.5.1",
+    "webpack-dev-server": "^2.6.1",
     "webpack-hot-middleware": "^2.18.2"
   }
 }

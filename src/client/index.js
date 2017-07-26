@@ -12,6 +12,7 @@ const render = Application =>
   );
 
 render(GameApp);
+
 if (module.hot) {
   module.hot.accept("./App", () => render(GameApp));
 }

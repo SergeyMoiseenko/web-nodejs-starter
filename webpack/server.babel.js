@@ -1,15 +1,16 @@
-import path from "path";
-import webpack from "webpack";
-import serverExternalDeps from "webpack-node-externals";
-import CleanPlugin from "clean-webpack-plugin";
-import eslintFormatter from "eslint-friendly-formatter";
-import Dotenv from "dotenv-webpack";
-import { getIfUtils, removeEmpty } from "webpack-config-utils"
-import postcssImport from "postcss-import";
-import postcssCssNext from "postcss-cssnext";
-import postcssReporter from "postcss-reporter";
+const path                        = require("path");
+const webpack                     = require("webpack");
+const serverExternalDeps          = require("webpack-node-externals");
+const CleanPlugin                 = require("clean-webpack-plugin");
+const eslintFormatter             = require("eslint-friendly-formatter");
+const Dotenv                      = require("dotenv-webpack");
+const { getIfUtils, removeEmpty } = require("webpack-config-utils");
+const postcssImport               = require("postcss-import");
+const postcssCssNext              = require("postcss-cssnext");
+const postcssReporter             = require("postcss-reporter");
 
-export default env => {
+
+module.exports = (env) => {
   const { ifProd, ifNotProd, ifDev } = getIfUtils(env);
 
   // It can be optional, because it hits on performance in production
@@ -43,7 +44,7 @@ export default env => {
   const jsLinter = {
     enforce: "pre",
     test: /\.js$|\.jsx$/,
-    include: [path.resolve(__dirname, "../src")],
+    include: [path.resolve(process.cwd(), "src/server")],
     loader: "eslint-loader",
     options: {
       fix: true,
@@ -94,11 +95,11 @@ export default env => {
     target: "node",
 
     entry: {
-      server: path.resolve( __dirname, "../src/server/index.js" )
+      server: path.resolve( process.cwd(), "src/server/index.js" )
     },
 
     output: {
-      path: ifProd( path.resolve(__dirname, "../dist"), path.resolve(__dirname, "../build") ),
+      path:  path.resolve(process.cwd(), "build"),
       filename: ifProd("server.js", "server.dev.js"),
       publicPath: "/assets"
     },
@@ -130,13 +131,9 @@ export default env => {
         safe: path.resolve(__dirname, "../.env.example")
       }),
       new webpack.BannerPlugin(sourceMapBanner),
-      ifProd(
-        new CleanPlugin(["server.js"], {
-          root: path.resolve(__dirname, "../dist")
-        }),
         new CleanPlugin(["server.dev.js"], {
-          root: path.resolve(__dirname, "../build")
-        })
+          root: path.resolve(process.cwd(), "build")
+        }
       )
     ])
   }

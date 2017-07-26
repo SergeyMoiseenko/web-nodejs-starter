@@ -1,15 +1,15 @@
-import path from "path";
-import webpack from "webpack";
-import serverExternalDeps from "webpack-node-externals";
-import CleanPlugin from "clean-webpack-plugin";
-import eslintFormatter from "eslint-friendly-formatter";
-import ExtractTextPlugin from "extract-text-webpack-plugin";
-import { getIfUtils, removeEmpty } from "webpack-config-utils"
-import postcssImport from "postcss-import";
-import postcssCssNext from "postcss-cssnext";
-import postcssReporter from "postcss-reporter";
+const path                        = require("path");
+const webpack                     = require("webpack");
+const serverExternalDeps          = require("webpack-node-externals");
+const CleanPlugin                 = require("clean-webpack-plugin");
+const eslintFormatter             = require("eslint-friendly-formatter");
+const ExtractTextPlugin           = require("extract-text-webpack-plugin");
+const { getIfUtils, removeEmpty } = require("webpack-config-utils");
+const postcssImport               = require("postcss-import");
+const postcssCssNext              = require("postcss-cssnext");
+const postcssReporter             = require("postcss-reporter");
 
-export default (env) => {
+module.exports = (env) => {
   const { ifProd, ifNotProd, ifDev } = getIfUtils(env);
 
   const babelOptions = {
@@ -37,7 +37,7 @@ export default (env) => {
   const jsLinter = {
     enforce: "pre",
     test: /\.js$|\.jsx$/,
-    include: [path.resolve(process.cwd(), "src")],
+    include: [path.resolve(process.cwd(), "src/client")],
     loader: "eslint-loader",
     options: {
       fix: true,
@@ -93,9 +93,9 @@ export default (env) => {
   };
 
   const output = {
-    path: ifProd(path.resolve(process.cwd(), "dist/public/assets"), path.resolve(process.cwd(), "build/public/assets")),
+    path: path.resolve(process.cwd(), "build/public/assets"),
     filename: ifProd("[chunkhash].js", "[name].js"),
-    publicPath: "/assets"
+    publicPath: "/assets/"
   };
 
   if (env.prod) {
@@ -106,7 +106,8 @@ export default (env) => {
     entry: {
       client: removeEmpty([
         ifDev("react-hot-loader/patch"),
-        ifDev("webpack-hot-middleware/client"),
+        ifDev("webpack-dev-server/client?http://localhost:3001"),
+        ifDev("webpack/hot/only-dev-server"),
         "./client/index.js"
       ])
     },
@@ -114,7 +115,12 @@ export default (env) => {
     output: output,
 
     devtool: ifProd("cheap-module-source-map", "eval"),
-
+    devServer: {
+      host: 'localhost',
+      port: 3001,
+      historyApiFallback: true,
+      hot: true
+    },
     module: {
       rules: [
         jsModules,
@@ -144,14 +150,9 @@ export default (env) => {
         filename: '[contenthash].css',
         allChunks: true
       })),
-      ifProd(
-        new CleanPlugin(["public/assets"], {
-          root: path.resolve(process.cwd(), "dist")
-        }),
-        new CleanPlugin(["public/assets"], {
-          root: path.resolve(process.cwd(), "build")
-        })
-      )
+      new CleanPlugin(["public/assets"], {
+        root: path.resolve(process.cwd(), "build")
+      })
     ])
   }
 };

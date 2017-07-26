@@ -10,3 +10,6 @@ node_modules
 # build and dist folders
 build
 dist
+
+# yarn
+yarn-error.log

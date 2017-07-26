@@ -106,7 +106,7 @@ export default class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ? `Move #${move}` : "Game start";
+      const desc = move ? `Move #${move}` : "Start";
       return (
         <li key={move}>
           <a href="#" onClick={() => this.jumpTo(move)}>
@@ -120,7 +120,7 @@ export default class Game extends React.Component {
     if (winner) {
       status = `Winner: ${winner}`;
     } else {
-      status = `Next player: ${this.state.xIsNext ? "X" : "O"}`;
+      status = `Next turn: ${this.state.xIsNext ? "X" : "O"}`;
     }
 
     return (

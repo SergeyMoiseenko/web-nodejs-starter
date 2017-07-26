@@ -1,24 +1,14 @@
-import path from "path";
 import express from "express";
 import expressSession from "express-session";
 import morgan from "morgan";
 import redis from "redis";
 import connectRedis from "connect-redis";
-import mongoose from "mongoose";
-import bluebirdPromise from "bluebird";
-import initServer from "./server";
+
+import setupController from "./server";
 import passport from "./authentication";
 
-mongoose.Promise = bluebirdPromise;
-
-mongoose.connect(process.env.MONGODB_URI, { useMongoClient: true }).then(() => {
-  console.log("Connection to mongo created");
-});
 const RedisStore = connectRedis(expressSession);
 const app = express();
-
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "views"));
 
 // Define logging configuraion for our server
 app.use(morgan("dev"));
@@ -46,18 +36,12 @@ app.use(passport.session());
 
 /* eslint-disable */
 if (process.env.NODE_ENV === "development") {
-  const webpack = require("webpack");
-  const devMiddleware = require("webpack-dev-middleware");
-  const hotMiddleware = require("webpack-hot-middleware");
-  const browserConfig = require("../../webpack/client.babel").default( {dev: true} );
-  console.log(process.cwd());
-  const compiler = webpack(browserConfig);
-  app.use(devMiddleware(compiler, {noInfo: true, publicPath: browserConfig.output.publicPath}));
-  app.use(hotMiddleware(compiler));
+  const proxyForClientAssets = require("http-proxy-middleware");
+  app.use("/assets", proxyForClientAssets({ target: "http://localhost:3001"}));
 }
 /* eslint-enable */
 
-initServer(app);
+setupController(app);
 
 app.listen(parseInt(process.env.PORT, 10));
 console.log(`app listen on port ${parseInt(process.env.PORT, 10)}`);
