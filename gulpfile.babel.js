@@ -3,7 +3,6 @@ const { spawn } = require("child_process");
 const gulp = require("gulp");
 const webpack = require("webpack");
 const WebpackDevServer = require("webpack-dev-server");
-const shell = require("gulp-shell");
 const gutil = require("gulp-util");
 const nodemon = require("nodemon");
 const serverConfig = require("./webpack/server.babel");

@@ -34,6 +34,12 @@ module.exports = (env) => {
     plugins: removeEmpty([
       "react-hot-loader/babel",
       "transform-react-jsx",
+      ["react-css-modules", {
+        context: path.resolve(process.cwd(), "src"),
+        webpackHotModuleReloading: true,
+        generateScopedName: "[name]--[local]--[hash:base64:5]",
+        exclude: "node_modules"
+      }],
       ifProd("transform-react-constant-elements"),
       ifProd("transform-react-inline-elements"),
       ifProd("transform-react-remove-prop-types"),
@@ -55,7 +61,7 @@ module.exports = (env) => {
 
   const jsLoaders = {
     test: /\.js$|\.jsx$/,
-    include: [path.resolve(__dirname, "../src")],
+    include: [path.resolve(process.cwd(), "src")],
     use: [
       {
         loader: "babel-loader",
@@ -64,9 +70,9 @@ module.exports = (env) => {
     ]
   };
 
-  const cssLoaders = {
+  const cssModules = {
     test: /\.css$/,
-    include: path.resolve(__dirname, "../src/client"),
+    include: [path.resolve(process.cwd(), "src/client")],
     use: [
       {
         loader: "css-loader/locals",
@@ -91,6 +97,33 @@ module.exports = (env) => {
     ]
   };
 
+  const globalCss = {
+    test: /\.css$/,
+    include: [path.resolve(process.cwd(), "node_modules/bootstrap-css")],
+    use: [
+      {
+        loader: "css-loader/locals",
+        options: {
+          localIdentName: "global.css",
+          sourceMap: true,
+          modules: false,
+          importLoaders: 1
+        }
+      },
+      {
+        loader: "postcss-loader",
+        options: {
+          ident: "postcss",
+          plugins: [
+            postcssImport({ path: path.resolve(__dirname, '../src/client') }),
+            postcssCssNext({ browsers: ['> 1%', 'last 2 versions'] }),
+            postcssReporter({ clearMessages: true })
+          ]
+        }
+      }
+    ]
+  }
+
   return {
     target: "node",
 
@@ -112,7 +145,8 @@ module.exports = (env) => {
       rules: [
         jsLoaders,
         jsLinter,
-        cssLoaders,
+        cssModules,
+        globalCss,
         {
           test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
           loader: 'url-loader',

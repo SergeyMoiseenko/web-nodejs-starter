@@ -15,9 +15,11 @@
     "build:server:prod": "gulp server:build:prod"
   },
   "dependencies": {
+    "babel-plugin-react-css-modules": "^3.1.0",
     "bcrypt": "^1.0.2",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
+    "bootstrap-css": "4.0.0-alpha.5",
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
@@ -28,7 +30,6 @@
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "pug": "^2.0.0-rc.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-hot-loader": "next",
@@ -61,11 +62,7 @@
     "eslint-plugin-react": "^7.1.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-concat": "^2.6.1",
     "gulp-nodemon": "^2.2.1",
-    "gulp-shell": "^0.6.3",
-    "gulp-sourcemaps": "^2.6.0",
     "nodemon": "^1.11.0",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^10.0.0",
@@ -76,8 +73,6 @@
     "url-loader": "^0.5.9",
     "webpack": "^3.3.0",
     "webpack-config-utils": "^2.3.0",
-    "webpack-dev-middleware": "^1.11.0",
-    "webpack-dev-server": "^2.6.1",
-    "webpack-hot-middleware": "^2.18.2"
+    "webpack-dev-server": "^2.6.1"
   }
 }

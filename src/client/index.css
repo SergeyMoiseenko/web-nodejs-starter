@@ -18,7 +18,7 @@ ol, ul {
 }
 
 .square {
-  background: #a8e7ff;
+  background: #fcab97;
   border: 1px solid #999;
   float: left;
   font-size: 24px;
@@ -47,4 +47,17 @@ ol, ul {
 
 .gameInfo {
   margin-left: 20px;
+}
+
+.move-button {
+  margin-top: 10px;
+  background-color:    #42c4ff;
+  border-top-color:    #205f7c;
+  border-right-color:  #205f7c;
+  border-left-color:   #205f7c;
+  border-bottom-color: #205f7c;
+}
+
+.move-button:hover {
+  background-color: #2f8bb5;
 }

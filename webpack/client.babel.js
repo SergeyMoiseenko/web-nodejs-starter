@@ -1,13 +1,13 @@
-const path                        = require("path");
-const webpack                     = require("webpack");
-const serverExternalDeps          = require("webpack-node-externals");
-const CleanPlugin                 = require("clean-webpack-plugin");
-const eslintFormatter             = require("eslint-friendly-formatter");
-const ExtractTextPlugin           = require("extract-text-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
+const serverExternalDeps = require("webpack-node-externals");
+const CleanPlugin = require("clean-webpack-plugin");
+const eslintFormatter = require("eslint-friendly-formatter");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const { getIfUtils, removeEmpty } = require("webpack-config-utils");
-const postcssImport               = require("postcss-import");
-const postcssCssNext              = require("postcss-cssnext");
-const postcssReporter             = require("postcss-reporter");
+const postcssImport = require("postcss-import");
+const postcssCssNext = require("postcss-cssnext");
+const postcssReporter = require("postcss-reporter");
 
 module.exports = (env) => {
   const { ifProd, ifNotProd, ifDev } = getIfUtils(env);
@@ -27,6 +27,12 @@ module.exports = (env) => {
     plugins: removeEmpty([
       "react-hot-loader/babel",
       "transform-react-jsx",
+      ["react-css-modules", {
+        context: path.resolve(process.cwd(), "src"),
+        webpackHotModuleReloading: true,
+        generateScopedName: "[name]--[local]--[hash:base64:5]",
+        exclude: "node_modules"
+      }],
       ifProd("transform-react-constant-elements"),
       ifProd("transform-react-inline-elements"),
       ifProd("transform-react-remove-prop-types"),
@@ -81,9 +87,33 @@ module.exports = (env) => {
     }
   ]);
 
+  const globalCssLoaders = removeEmpty([
+    ifDev({ loader: "style-loader" }),
+    {
+      loader: "css-loader",
+      options: {
+        localIdentName: "global.css",
+        sourceMap: true,
+        modules: false,
+        importLoaders: 1
+      }
+    },
+    {
+      loader: "postcss-loader",
+      options: {
+        ident: "postcss",
+        plugins: [
+          postcssImport({ path: path.resolve(process.cwd(), 'src/client') }),
+          postcssCssNext({ browsers: ['> 1%', 'last 2 versions'] }),
+          postcssReporter({ clearMessages: true })
+        ]
+      }
+    }
+  ]);
+
   const cssModules = {
     test: /\.css$/,
-    include: path.resolve(process.cwd(), "src/client"),
+    include: [path.resolve(process.cwd(), "src/client")],
     use: ifProd(
       ExtractTextPlugin.extract({
         fallback: "style-loader",
@@ -91,6 +121,17 @@ module.exports = (env) => {
       }),
       cssLoaders)
   };
+
+  const globalCss = {
+    test: /\.css$/,
+    include: [path.resolve(process.cwd(), "node_modules/bootstrap-css")],
+    use: ifProd(
+      ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: globalCssLoaders
+      }),
+      globalCssLoaders)
+  }
 
   const output = {
     path: path.resolve(process.cwd(), "build/public/assets"),
@@ -126,6 +167,7 @@ module.exports = (env) => {
         jsModules,
         jsLinter,
         cssModules,
+        globalCss,
         {
           test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
           loader: 'url-loader',

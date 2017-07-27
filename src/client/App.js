@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import styles from "./index.css";
+import "./index.css";
 
 function calculateWinner(squares) {
   const lines = [
@@ -25,7 +25,7 @@ function calculateWinner(squares) {
 
 function Square(props) {
   return (
-    <button className={styles.square} onClick={props.onClick}>
+    <button styleName="square" onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -44,17 +44,17 @@ class Board extends React.Component {
   render() {
     return (
       <div>
-        <div className={styles.boardRow}>
+        <div styleName="boardRow">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
           {this.renderSquare(2)}
         </div>
-        <div className={styles.boardRow}>
+        <div styleName="boardRow">
           {this.renderSquare(3)}
           {this.renderSquare(4)}
           {this.renderSquare(5)}
         </div>
-        <div className={styles.boardRow}>
+        <div styleName="boardRow">
           {this.renderSquare(6)}
           {this.renderSquare(7)}
           {this.renderSquare(8)}
@@ -109,9 +109,14 @@ export default class Game extends React.Component {
       const desc = move ? `Move #${move}` : "Start";
       return (
         <li key={move}>
-          <a href="#" onClick={() => this.jumpTo(move)}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            styleName="move-button"
+            onClick={() => this.jumpTo(move)}
+          >
             {desc}
-          </a>
+          </button>
         </li>
       );
     });
@@ -124,11 +129,11 @@ export default class Game extends React.Component {
     }
 
     return (
-      <div className={styles.game}>
-        <div className={styles.gameBoard}>
+      <div styleName="game">
+        <div>
           <Board squares={current.squares} onClick={i => this.handleClick(i)} />
         </div>
-        <div className={styles.gameInfo}>
+        <div styleName="gameInfo">
           <div>
             {status}
           </div>
